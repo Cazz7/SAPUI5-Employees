@@ -1,12 +1,16 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/model/json/JSONModel"
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
 ],
 	/**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+     * @param {typeof sap.ui.model.Filter} Filter
+     * @param {typeof sap.ui.model.FilterOperator} FilterOperator
      */
-    function (Controller, JSONModel) {
+    function (Controller, JSONModel, Filter, FilterOperator) {
         "use strict";
 
         function onInit() {
@@ -46,23 +50,49 @@ sap.ui.define([
             oView.setModel(oJSONModel);
         };
 
+        function onFilter(){
+            var oJSON = this.getView().getModel().getData();
+
+            var filters = [];
+
+            if(oJSON.EmployeeId !== ""){
+                filters.push(new Filter("EmployeeID", FilterOperator.EQ, oJSON.EmployeeId));
+            }
+
+            if(oJSON.CountryKey !== ""){
+                filters.push(new Filter("Country", FilterOperator.EQ, oJSON.CountryKey));
+            }            
+            
+            var oList = this.getView().byId("tableEmployee");
+            var oBinding = oList.getBinding("items");
+            oBinding.filter(filters);
+        };
+
+        function onClearFilter(){
+            var oModel = this.getView().getModel();
+            oModel.setProperty("/EmployeeId", "");
+            oModel.setProperty("/CountryKey", "");
+        };        
+
         // Se implementan la lógica de otra forma para evitar que marque errores
         const Main = Controller.extend("logaligroup.Employees.controller.MainView", {});
 
-        Main.prototype.onValidate = function () {
-            var inputEmployee = this.byId("inputEmployee");
-            var valueEmployee = inputEmployee.getValue();
+        // Main.prototype.onValidate = function () {
+        //     var inputEmployee = this.byId("inputEmployee");
+        //     var valueEmployee = inputEmployee.getValue();
 
-            if (valueEmployee.length === 6) {
-                this.getView().byId("labelCountry").setVisible(true);
-                this.getView().byId("slCountry").setVisible(true);
-            } else {
-                this.getView().byId("labelCountry").setVisible(false);
-                this.getView().byId("slCountry").setVisible(false);
-            }
-        };
+        //     if (valueEmployee.length === 6) {
+        //         this.getView().byId("labelCountry").setVisible(true);
+        //         this.getView().byId("slCountry").setVisible(true);
+        //     } else {
+        //         this.getView().byId("labelCountry").setVisible(false);
+        //         this.getView().byId("slCountry").setVisible(false);
+        //     }
+        // };
 
         Main.prototype.onInit = onInit;
+        Main.prototype.onFilter = onFilter;
+        Main.prototype.onClearFilter = onClearFilter;
 
         return Main;
     });
