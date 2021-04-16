@@ -15,27 +15,34 @@ sap.ui.define([
             var oView = this.getView();
             var i18nBundle = oView.getModel("i18n").getResourceBundle();
 
-            var oJSON = {
-                employeeId: "12345",
-                countryKey: "UK",
-                listCountry: [
-                    {
-                        key: "US",
-                        text: i18nBundle.getText("countryUS")
-                    },
-                    {
-                        key: "UK",
-                        text: i18nBundle.getText("countryUK")
-                    },
-                    {
-                        key: "ES",
-                        text: i18nBundle.getText("countryES")
-                    },
-                ]
+            // Carga de datos mediante el codigo
+            // var oJSON = {
+            //     employeeId: "12345",
+            //     countryKey: "UK",
+            //     listCountry: [
+            //         {
+            //             key: "US",
+            //             text: i18nBundle.getText("countryUS")
+            //         },
+            //         {
+            //             key: "UK",
+            //             text: i18nBundle.getText("countryUK")
+            //         },
+            //         {
+            //             key: "ES",
+            //             text: i18nBundle.getText("countryES")
+            //         },
+            //     ]
 
-            };
+            // };
 
-            oJSONModel.setData(oJSON);
+            //oJSONModel.setData(oJSON);
+            //Cargar los datos desde el modelo JSON
+            oJSONModel.loadData("./localService/mockdata/Employees.json", false);
+            //Se define una funcion que se llama cuando se cargan todos los datos
+            // oJSONModel.attachRequestCompleted(function(oEventModel){
+            //     console.log(JSON.stringify(oJSONModel.getData()));
+            // });
             oView.setModel(oJSONModel);
         };
 
