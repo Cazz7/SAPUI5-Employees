@@ -64,7 +64,7 @@
                                         </Column>                                                                                                              
                                     </columns>
                                     <items>
-                                        <ColumnListItem >
+                                        <ColumnListItem type="Active" >
                                             <cells>
                                                 <Label text="{EmployeeID}"/>
                                                 <Label text="{LastName}, {FirstName}"/>
