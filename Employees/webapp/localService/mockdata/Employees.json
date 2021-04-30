@@ -1,8 +1,7 @@
-{
-    "Employees": [
+ [
         {
             "EmployeeID": "1",
-            "LastName": "García Lopez",
+            "LastName": "García López",
             "FirstName": "María",
             "Country": "ES",
             "City": "Madrid",
@@ -101,4 +100,3 @@
             ]
         }
     ]
-}
