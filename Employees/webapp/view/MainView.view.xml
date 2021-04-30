@@ -15,7 +15,7 @@
                                     class="sapUiSmallMargin"/>
                             <Input  id="inputEmployee" 
                                     maxLength="6" 
-                                    value="{/EmployeeId}"
+                                    value="{jsonCountries>/EmployeeId}"
                                     width="200px" 
                                     class="sapUiSmallMarginEnd"/>
                             <Label  id="labelCountry" 
@@ -23,14 +23,14 @@
                                     labelFor="slCountry"
                                     class="sapUiSmallMargin"
                                     visible="true"/>
-                            <Select id="slCountry" selectedKey="{/CountryKey}" 
+                            <Select id="slCountry" selectedKey="{jsonCountries>/CountryKey}" 
                                     forceSelection="false" visible="true"
                                     items="{
-                                        path: '/ListCountry',
+                                        path: 'jsonCountries>/ListCountry',
                                         sorter: { path: 'Key' }
                                     }">
                                     <items>
-                                        <core:Item key ="{Key}" text="{Text}"/>                                    
+                                        <core:Item key ="{jsonCountries>Key}" text="{jsonCountries>Text}"/>                                    
                                     </items>
                             </Select>        
                             <Button id="btnFilter" text="{i18n>btnFilter}" icon="sap-icon://search"

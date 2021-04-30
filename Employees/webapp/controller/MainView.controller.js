@@ -15,39 +15,17 @@ sap.ui.define([
 
         function onInit() {
 
-            var oJSONModel = new JSONModel();
+            
             var oView = this.getView();
-            var i18nBundle = oView.getModel("i18n").getResourceBundle();
 
-            // Carga de datos mediante el codigo
-            // var oJSON = {
-            //     employeeId: "12345",
-            //     countryKey: "UK",
-            //     listCountry: [
-            //         {
-            //             key: "US",
-            //             text: i18nBundle.getText("countryUS")
-            //         },
-            //         {
-            //             key: "UK",
-            //             text: i18nBundle.getText("countryUK")
-            //         },
-            //         {
-            //             key: "ES",
-            //             text: i18nBundle.getText("countryES")
-            //         },
-            //     ]
-
-            // };
-
-            //oJSONModel.setData(oJSON);
             //Cargar los datos desde el modelo JSON
-            oJSONModel.loadData("./localService/mockdata/Employees.json", false);
-            //Se define una funcion que se llama cuando se cargan todos los datos
-            // oJSONModel.attachRequestCompleted(function(oEventModel){
-            //     console.log(JSON.stringify(oJSONModel.getData()));
-            // });
-            oView.setModel(oJSONModel);
+            var oJSONModelEmpl = new JSONModel();
+            oJSONModelEmpl.loadData("./localService/mockdata/Employees.json", false);
+            oView.setModel(oJSONModelEmpl, "jsonEmployees");
+
+            var oJSONModelCountries = new JSONModel();
+            oJSONModelCountries.loadData("./localService/mockdata/Countries.json", false);
+            oView.setModel(oJSONModelCountries, "jsonCountries");            
         };
 
         function onFilter(){
