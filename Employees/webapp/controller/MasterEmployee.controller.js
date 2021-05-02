@@ -16,27 +16,6 @@ sap.ui.define([
 
         function onInit() {
 
-
-            var oView = this.getView();
-
-            //Cargar los datos desde el modelo JSON
-            var oJSONModelEmpl = new JSONModel();
-            oJSONModelEmpl.loadData("./localService/mockdata/Employees.json", false);
-            oView.setModel(oJSONModelEmpl, "jsonEmployees");
-
-            var oJSONModelCountries = new JSONModel();
-            oJSONModelCountries.loadData("./localService/mockdata/Countries.json", false);
-            oView.setModel(oJSONModelCountries, "jsonCountries");
-
-            var oJSONModelConfig = new JSONModel({
-                visibleID: true,
-                visibleName: true,
-                visibleCountry: true,
-                visibleCity: false,
-                visibleButtonShowCity: true,
-                visibleButtonHideCity: false
-            });
-            oView.setModel(oJSONModelConfig, "jsonConfig");
         };
 
         function onFilter() {
@@ -110,7 +89,7 @@ sap.ui.define([
         };        
 
         // Se implementan la lógica de otra forma para evitar que marque errores
-        const Main = Controller.extend("logaligroup.Employees.controller.MainView", {});
+        const Main = Controller.extend("logaligroup.Employees.controller.MasterEmployee", {});
 
         Main.prototype.onInit = onInit;
         Main.prototype.onFilter = onFilter;
