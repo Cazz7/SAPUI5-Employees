@@ -14,8 +14,8 @@ sap.ui.define([
     function (Controller, JSONModel, Filter, FilterOperator) {
         "use strict";
 
-        function onInit() {
-
+        function onInit() {            
+            this._bus = sap.ui.getCore().getEventBus();
         };
 
         function onFilter() {
@@ -86,7 +86,14 @@ sap.ui.define([
         function onCloseOrder(oEvent) {
             //This attribute was already saved 
             this._oDialogOrders.close();
-        };        
+        };
+        
+        function showEmployee(oEvent) {
+            // Path of selected item
+            var path = oEvent.getSource().getBindingContext("jsonEmployees").getPath();
+            // Publish of the event
+            this._bus.publish("flexible", "showEmployee", path);
+        };         
 
         // Se implementan la lógica de otra forma para evitar que marque errores
         const Main = Controller.extend("logaligroup.Employees.controller.MasterEmployee", {});
@@ -99,6 +106,7 @@ sap.ui.define([
         Main.prototype.onHideCity = onHideCity;
         Main.prototype.showOrders = showOrders;
         Main.prototype.onCloseOrder = onCloseOrder;
+        Main.prototype.showEmployee = showEmployee;
 
         return Main;
     });
