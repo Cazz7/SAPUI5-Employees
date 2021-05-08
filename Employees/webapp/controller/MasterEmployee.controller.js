@@ -68,7 +68,7 @@ sap.ui.define([
             //get selected controller. Context selected
             var iconPressed = oEvent.getSource();
             //Context or JSON from the model
-            var oContext = iconPressed.getBindingContext("jsonEmployees");
+            var oContext = iconPressed.getBindingContext("odataNorthwind");
 
             //Verify if Dialog was previously created
             if (!this._oDialogOrders) {
@@ -79,7 +79,7 @@ sap.ui.define([
             };
 
             //Dialog binding to the context to have access to the data of selected item
-            this._oDialogOrders.bindElement("jsonEmployees>" + oContext.getPath());
+            this._oDialogOrders.bindElement("odataNorthwind>" + oContext.getPath());
             this._oDialogOrders.open();
         };
 
@@ -90,7 +90,7 @@ sap.ui.define([
         
         function showEmployee(oEvent) {
             // Path of selected item
-            var path = oEvent.getSource().getBindingContext("jsonEmployees").getPath();
+            var path = oEvent.getSource().getBindingContext("odataNorthwind").getPath();
             // Publish of the event
             this._bus.publish("flexible", "showEmployee", path);
         };         
