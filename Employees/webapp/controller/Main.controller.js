@@ -1,7 +1,8 @@
 // @ts-nocheck
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/model/json/JSONModel"
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
@@ -9,7 +10,7 @@ sap.ui.define([
      * @param {typeof sap.ui.model.Filter} Filter
      * @param {typeof sap.ui.model.FilterOperator} FilterOperator
      */
-    function (Controller, JSONModel) {
+    function (Controller, JSONModel, MessageToast) {
         "use strict";
 
         return Controller.extend("logaligroup.Employees.controller.Main", {
@@ -62,10 +63,10 @@ sap.ui.define([
                             "')", {
                         success: function () { 
                             this.onReadODataIncidence.bind(this)(data.EmployeeId);//To update tableindicences after success
-                            sap.m.MessageToast.show(oResourceBundle.getText("odataDeleteOK"));
+                            MessageToast.show(oResourceBundle.getText("odataDeleteOK"));
                         }.bind(this),
                         error: function (e) {
-                            sap.m.MessageToast.show(oResourceBundle.getText("odataDeleteKO"));
+                            MessageToast.show(oResourceBundle.getText("odataDeleteKO"));
                         }.bind(this)
                     });                        
                 } , this);
@@ -110,10 +111,10 @@ sap.ui.define([
                         .create("/IncidentsSet", body, {
                             success: function () {
                                 this.onReadODataIncidence.bind(this)(employeeId);//To update tableindicences after success
-                                sap.m.MessageToast.show(oResourceBundle.getText("odataSaveOK"));
+                                MessageToast.show(oResourceBundle.getText("odataSaveOK"));
                             }.bind(this),
                             error: function (e) {
-                                sap.m.MessageToast.show(oResourceBundle.getText("odataSaveKO"));
+                                MessageToast.show(oResourceBundle.getText("odataSaveKO"));
                             }.bind(this)
                         });
                     // if one of these fields has changed
@@ -136,14 +137,14 @@ sap.ui.define([
                             "')", body, {
                         success: function () {
                             this.onReadODataIncidence.bind(this)(employeeId);//To update tableindicences after success
-                            sap.m.MessageToast.show(oResourceBundle.getText("odataUpdateOK"));
+                            MessageToast.show(oResourceBundle.getText("odataUpdateOK"));
                         }.bind(this),
                         error: function (e) {
-                            sap.m.MessageToast.show(oResourceBundle.getText("odataUpdateKO"));
+                            MessageToast.show(oResourceBundle.getText("odataUpdateKO"));
                         }.bind(this)
                     });
                 } else {
-                    sap.m.MessageToast.show(oResourceBundle.getText("odataNoChanges"));
+                    MessageToast.show(oResourceBundle.getText("odataNoChanges"));
                 };
             },
             onReadODataIncidence: function (employeeID) {
@@ -161,6 +162,9 @@ sap.ui.define([
                         tableIncidence.removeAllContent();//to prevent duplicate incidences
 
                         for (var incidence in data.results) {
+                            // Values from oData are always valid
+                            // New property validateDate is added
+                            data.results[incidence]._ValidateDate = true;
                             var newIncidence = sap.ui.xmlfragment("logaligroup.Employees.fragment.NewIncidence",
                                 this._detailEmployeeView.getController());
                             this._detailEmployeeView.addDependent(newIncidence);
