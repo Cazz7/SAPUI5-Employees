@@ -22,24 +22,14 @@ sap.ui.define([
 
         },
         onDeleteIncidence: function (oEvent) {
-            var tableIncidence = this.getView().byId("tableIncidence");
-            var rowIncidence = oEvent.getSource().getParent().getParent();
-            var incidenceModel = this.getView().getModel("incidenceModel");
-            var odata = incidenceModel.getData();
-            var contextObject = rowIncidence.getBindingContext("incidenceModel").getObject();
+            
+            var contextObject = oEvent.getSource().getBindingContext("incidenceModel").getObject();
+            this._bus.publish("incidence", "onDeleteIncidence", {
+                IncidenceId: contextObject.IncidenceId,
+                SapId: contextObject.SapId,
+                EmployeeId : contextObject.EmployeeId
+            });
 
-            odata.splice(contextObject.index - 1, 1);
-            for (var i in odata) {
-                odata[i].index = parseInt(i) + 1;
-            };
-
-            incidenceModel.refresh();
-            tableIncidence.removeContent(rowIncidence);
-
-            for (var j in tableIncidence.getContent()) {
-               tableIncidence.getContent()[j].bindElement("incidenceModel>/" + j);
-            };
-              
         },
         onSaveIncidence: function(oEvent) {
             var incidence = oEvent.getSource().getParent().getParent();
@@ -48,7 +38,22 @@ sap.ui.define([
                 incidenceRow : incidenceRow.sPath.replace('/','')
             });
         },
-        Formatter: formatter
+        Formatter: formatter,
+        updateIncidenceCreationDate: function(oEvent){
+            var context = oEvent.getSource().getBindingContext("incidenceModel");
+            var contextObject = context.getObject();
+            contextObject.CreationDateX = true;
+        },
+        updateIncidenceReason: function(oEvent){
+            var context = oEvent.getSource().getBindingContext("incidenceModel");
+            var contextObject = context.getObject();
+            contextObject.ReasonX = true;            
+        },
+        updateIncidenceType: function(oEvent){
+            var context = oEvent.getSource().getBindingContext("incidenceModel");
+            var contextObject = context.getObject();
+            contextObject.TypeX = true;            
+        }         
     });
 
 });

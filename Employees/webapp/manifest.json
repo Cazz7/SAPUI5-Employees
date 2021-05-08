@@ -97,7 +97,7 @@
           "defaultCountMode": "Request",
           "refreshAfterChange": false,
           "useBatch": false,
-          "defaultUpdateMethod": "Pu"
+          "defaultUpdateMethod": "Put"
         }
       }
     },
