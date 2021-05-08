@@ -60,7 +60,7 @@ sap.ui.define([
                             "',SapId='" + data.SapId +
                             "',EmployeeId='" + data.EmployeeId +
                             "')", {
-                        success: function () {
+                        success: function () { 
                             this.onReadODataIncidence.bind(this)(data.EmployeeId);//To update tableindicences after success
                             sap.m.MessageToast.show(oResourceBundle.getText("odataDeleteOK"));
                         }.bind(this),
