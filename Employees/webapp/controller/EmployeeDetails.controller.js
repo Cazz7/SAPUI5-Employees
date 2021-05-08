@@ -17,7 +17,7 @@ sap.ui.define([
             var odata = incidenceModel.getData();
             var index = odata.length;
             //New Incidences have invalid values by default
-            odata.push({ index: index + 1, _ValidateDate: false });
+            odata.push({ index: index + 1, _ValidateDate: false, EnabledSave: false });
             incidenceModel.refresh();
             newIncidence.bindElement("incidenceModel>/" + index);
             tableIncidence.addContent(newIncidence);
@@ -26,17 +26,24 @@ sap.ui.define([
         },
         onDeleteIncidence: function (oEvent) {
 
-            var contextObject = oEvent.getSource().getBindingContext("incidenceModel").getObject();
-            this._bus.publish("incidence", "onDeleteIncidence", {
-                IncidenceId: contextObject.IncidenceId,
-                SapId: contextObject.SapId,
-                EmployeeId: contextObject.EmployeeId
+            let contextObject = oEvent.getSource().getBindingContext("incidenceModel").getObject();
+            let oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
+            //Confirmation from user before saving
+            MessageBox.confirm(oResourceBundle.getText("confirmDeleteIncidence"), {
+                onClose: function (oAction) {
+                    if (oAction === "OK") {
+                        this._bus.publish("incidence", "onDeleteIncidence", {
+                            IncidenceId: contextObject.IncidenceId,
+                            SapId: contextObject.SapId,
+                            EmployeeId: contextObject.EmployeeId
+                        });
+                    }
+                }.bind(this)
             });
-
         },
         onSaveIncidence: function (oEvent) {
-            var incidence = oEvent.getSource().getParent().getParent();
-            var incidenceRow = incidence.getBindingContext("incidenceModel");
+            let incidence = oEvent.getSource().getParent().getParent();
+            let incidenceRow = incidence.getBindingContext("incidenceModel");
             this._bus.publish("incidence", "onSaveIncidence", {
                 incidenceRow: incidenceRow.sPath.replace('/', '')
             });
@@ -66,6 +73,11 @@ sap.ui.define([
                 contextObject.CreationDateState = "None";
             };
 
+            if (oEvent.getSource().isValidValue() && contextObject.Reason) {
+                contextObject.EnabledSave = true;
+            } else {
+                contextObject.EnabledSave = false;
+            };
             context.getModel().refresh();
 
         },
@@ -81,12 +93,26 @@ sap.ui.define([
                 contextObject.ReasonState = "Error";
             };
 
+            if (contextObject._ValidateDate && oEvent.getSource().getValue()) {
+                contextObject.EnabledSave = true;
+            } else {
+                contextObject.EnabledSave = false;
+            };
+
             context.getModel().refresh();
         },
         updateIncidenceType: function (oEvent) {
-            var context = oEvent.getSource().getBindingContext("incidenceModel");
-            var contextObject = context.getObject();
+            let context = oEvent.getSource().getBindingContext("incidenceModel");
+            let contextObject = context.getObject();
+
+            if (contextObject._ValidateDate && contextObject.Reason) {
+                contextObject.EnabledSave = true;
+            } else {
+                contextObject.EnabledSave = false;
+            };
+
             contextObject.TypeX = true;
+            context.getModel().refresh();
         }
     });
 
