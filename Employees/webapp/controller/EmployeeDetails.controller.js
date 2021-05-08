@@ -6,7 +6,7 @@ sap.ui.define([
 
     return Controller.extend("logaligroup.Employees.controller.EmployeeDetails", {
         onInit: function () {
-
+            this._bus = sap.ui.getCore().getEventBus();
         },
         onCreateIncidence: function () {
             var tableIncidence = this.getView().byId("tableIncidence");
@@ -22,7 +22,7 @@ sap.ui.define([
 
         },
         onDeleteIncidence: function (oEvent) {
-             var tableIncidence = this.getView().byId("tableIncidence");
+            var tableIncidence = this.getView().byId("tableIncidence");
             var rowIncidence = oEvent.getSource().getParent().getParent();
             var incidenceModel = this.getView().getModel("incidenceModel");
             var odata = incidenceModel.getData();
@@ -40,6 +40,13 @@ sap.ui.define([
                tableIncidence.getContent()[j].bindElement("incidenceModel>/" + j);
             };
               
+        },
+        onSaveIncidence: function(oEvent) {
+            var incidence = oEvent.getSource().getParent().getParent();
+            var incidenceRow = incidence.getBindingContext("incidenceModel");
+            this._bus.publish("incidence", "onSaveIncidence", {
+                incidenceRow : incidenceRow.sPath.replace('/','')
+            });
         },
         Formatter: formatter
     });

@@ -12,6 +12,11 @@ sap.ui.define([
         "use strict";
 
         return Controller.extend("logaligroup.Employees.controller.Main", {
+            onBeforeRendering: function () {
+                //get attributes from employee details
+                this._detailEmployeeView = this.getView().byId("detailEmployeeView");
+
+            },
             onInit: function () {
                 var oView = this.getView();
 
@@ -42,6 +47,8 @@ sap.ui.define([
                 // Using susbscribed object from MasterEmployee controller
                 // showEmployeeDetail is called
                 this._bus.subscribe("flexible", "showEmployee", this.showEmployeeDetails, this);
+                // Using susbscribed object from EmployeeDetails controller
+                this._bus.subscribe("incidence", "onSaveIncidence", this.onSaveODataIndicence, this);
             },
             showEmployeeDetails: function (category, nameEvent, path) {
                 var detailView = this.getView().byId("detailEmployeeView");
@@ -54,6 +61,38 @@ sap.ui.define([
                 //clear content of incident          
                 detailView.byId("tableIncidence").removeAllContent();
 
-            }
+            },
+            onSaveODataIndicence: function (channelId, eventId, data) {
+                var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
+                var employeeId = this._detailEmployeeView.getBindingContext("odataNorthwind")
+                    .getObject().EmployeeID;
+                var incidenceModel = this._detailEmployeeView.getModel("incidenceModel").getData();
+
+                //Saved only once
+                if (typeof(incidenceModel[data.incidenceRow].IncidenceId) == 'undefined') {
+
+
+                    //body of incidence
+                    var body = {
+                        SapId: this.getOwnerComponent().SapId,
+                        EmployeeId: employeeId.toString(),
+                        CreationDate: incidenceModel[data.incidenceRow].CreationDate,
+                        Type: incidenceModel[data.incidenceRow].Type,
+                        Reason: incidenceModel[data.incidenceRow].Reason
+                    };
+                    //Model
+                    //We do not know when success will be executed so it is binded
+                    this.getView().getModel("incidenceModel").create("/IncidentsSet", body, {
+                        success: function () {
+                            sap.m.MessageToast.show(oResourceBundle.getText("odataSaveOK"));
+                        }.bind(this),
+                        error: function (e) {
+                            sap.m.MessageToast.show(oResourceBundle.getText("odataSaveKO"));
+                        }.bind(this)
+                    });
+                } else {
+                    sap.m.MessageToast.show(oResourceBundle.getText("odataNoChanges"));
+                };
+            },
         });
     });
