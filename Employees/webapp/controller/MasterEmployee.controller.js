@@ -83,6 +83,14 @@ sap.ui.define([
             this._oDialogOrders.open();
         };
 
+        function toOrderDetails(oEvent){
+            let orderID = oEvent.getSource().getBindingContext("odataNorthwind").getObject().OrderID;
+            let oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+            oRouter.navTo("RouteOrderDetails",{
+                OrderID : orderID
+            });
+        };
+
         function onCloseOrder(oEvent) {
             //This attribute was already saved 
             this._oDialogOrders.close();
@@ -107,6 +115,7 @@ sap.ui.define([
         Main.prototype.showOrders = showOrders;
         Main.prototype.onCloseOrder = onCloseOrder;
         Main.prototype.showEmployee = showEmployee;
+        Main.prototype.toOrderDetails = toOrderDetails;
 
         return Main;
     });

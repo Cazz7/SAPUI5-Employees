@@ -18,14 +18,10 @@
             </Column>                                
         </columns>
         <items>
-            <ColumnListItem >
+            <ColumnListItem type="Navigation" press="toOrderDetails">
                 <cells>
                     <Label text="{odataNorthwind>OrderID}"/>
-                </cells>
-                <cells>
                     <Label text="{odataNorthwind>Freight}"/>
-                </cells>   
-                <cells>
                     <Label text="{odataNorthwind>ShipAddress}"/>
                 </cells>                                            
             </ColumnListItem>
