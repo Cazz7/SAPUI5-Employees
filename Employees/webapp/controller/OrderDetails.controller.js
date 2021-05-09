@@ -3,12 +3,16 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/routing/History",
-    "sap/m/MessageBox"
+    "sap/m/MessageBox",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"    
 ],
     /**
      * @param {typeof sap.ui.core.routing.History} History
+     * @param {typeof sap.ui.model.Filter} Filter
+     * @param {typeof sap.ui.model.FilterOperator} FilterOperator
      */
-    function (Controller, History, MessageBox) {
+    function (Controller, History, MessageBox, Filter, FilterOperator) {
         "use strict";
 
         //Private section
@@ -21,36 +25,51 @@ sap.ui.define([
             this.getView().bindElement({
                 path: "/Orders(" + oEvent.getParameter("arguments").OrderID + ")",
                 model: "odataNorthwind",
-                events : {
+                events: {
                     dataReceived: function (oData) {
-                        _readSignature.bind(this)(oData.getParameter("data").OrderID, oData.getParameter("data").EmployeeID);
+                        _readDependencies.bind(this)(oData.getParameter("data").OrderID, oData.getParameter("data").EmployeeID);
                     }.bind(this)
                 }
             });
 
             //Get Employee ID
-            const objectContext = this.getView().getModel("odataNorthwind").getContext("/Orders(" + 
-                                oEvent.getParameter("arguments").OrderID + ")").getObject();
+            const objectContext = this.getView().getModel("odataNorthwind").getContext("/Orders(" +
+                oEvent.getParameter("arguments").OrderID + ")").getObject();
             if (objectContext) {
-                _readSignature.bind(this)(objectContext.OrderID, objectContext.EmployeeID);
-            }             
+                _readDependencies.bind(this)(objectContext.OrderID, objectContext.EmployeeID);
+            }
         };
-        function _readSignature(orderId, employeeId) {
+        function _readDependencies(orderId, employeeId) {
+            // Read signature Image
             this.getView().getModel("incidenceModel")
                 .read("/SignatureSet(OrderId='" + orderId +
-                                 "',SapId='" + this.getOwnerComponent().SapId +
-                                 "',EmployeeId='" + employeeId + "')",{
-                    success : function (data) {
+                    "',SapId='" + this.getOwnerComponent().SapId +
+                    "',EmployeeId='" + employeeId + "')", {
+                    success: function (data) {
                         const signature = this.getView().byId("signature");
                         if (data.MediaContent !== '') {
                             signature.setSignature("data:image/png;base64," + data.MediaContent)
-                        }                        
+                        }
                     }.bind(this),
-                    error : function (data) {
-                        
+                    error: function (data) {
+
                     }
                 });
-        }
+            //Bind Files
+            this.byId("uploadCollection").bindAggregation("items", {
+                path: "incidenceModel>/FilesSet",
+                filters: [
+                    new Filter("OrderId", FilterOperator.EQ, orderId),
+                    new Filter("SapId", FilterOperator.EQ, this.getOwnerComponent().SapId),
+                    new Filter("EmployeeId", FilterOperator.EQ, employeeId),
+                ],
+                template: new sap.m.UploadCollectionItem({
+                    documentId: "{incidenceModel>AttId}",
+                    visibleEdit: false,
+                    fileName: "{incidenceModel>FileName}"
+                }).attachPress(this.downloadFile)
+            });
+        };
 
         return Controller.extend("logaligroup.Employees.controller.OrderDetails", {
             onInit: function () {
@@ -125,6 +144,28 @@ sap.ui.define([
                         }
                     });
                 };
+            },
+            onFileBeforeUpload: function (oEvent) {
+
+                const sep = ";";
+                let filename = oEvent.getParameter("fileName");
+                let objectContext = oEvent.getSource().getBindingContext("odataNorthwind").getObject();
+                let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
+                    name: "slug",
+                    value: objectContext.OrderID + sep + this.getOwnerComponent().SapId
+                        + sep + objectContext.EmployeeID + sep + filename
+                });
+                oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
+            },
+            onFileChange: function (oEvent) {
+                let oUploadCollection = oEvent.getSource();
+
+                //Header Token CSRF - Cross-site request forgery
+                let oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
+                    name: "x-csrf-token",
+                    value: this.getView().getModel("incidenceModel").getSecurityToken()
+                });
+                oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
             }
         });
     });
