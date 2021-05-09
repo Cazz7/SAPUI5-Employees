@@ -1,11 +1,11 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller",
+    "logaligroup/Employees/controller/Base.controller",
     "logaligroup/Employees/model/formatter",
     "sap/m/MessageBox"
-], function (Controller, formatter, MessageBox) {
+], function (Base, formatter, MessageBox) {
     "use strict";
 
-    return Controller.extend("logaligroup.Employees.controller.EmployeeDetails", {
+    return Base.extend("logaligroup.Employees.controller.EmployeeDetails", {
         onInit: function () {
             this._bus = sap.ui.getCore().getEventBus();
         },
@@ -113,13 +113,6 @@ sap.ui.define([
 
             contextObject.TypeX = true;
             context.getModel().refresh();
-        },
-        toOrderDetails: function (oEvent){
-            let orderID = oEvent.getSource().getBindingContext("odataNorthwind").getObject().OrderID;
-            let oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            oRouter.navTo("RouteOrderDetails",{
-                OrderID : orderID
-            });
         }        
     });
 

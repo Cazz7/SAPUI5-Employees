@@ -1,6 +1,6 @@
 // @ts-nocheck
 sap.ui.define([
-    "sap/ui/core/mvc/Controller",
+    "logaligroup/Employees/controller/Base.controller",
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator"
@@ -11,7 +11,7 @@ sap.ui.define([
      * @param {typeof sap.ui.model.Filter} Filter
      * @param {typeof sap.ui.model.FilterOperator} FilterOperator
      */
-    function (Controller, JSONModel, Filter, FilterOperator) {
+    function (Base, JSONModel, Filter, FilterOperator) {
         "use strict";
 
         function onInit() {            
@@ -83,14 +83,6 @@ sap.ui.define([
             this._oDialogOrders.open();
         };
 
-        function toOrderDetails(oEvent){
-            let orderID = oEvent.getSource().getBindingContext("odataNorthwind").getObject().OrderID;
-            let oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            oRouter.navTo("RouteOrderDetails",{
-                OrderID : orderID
-            });
-        };
-
         function onCloseOrder(oEvent) {
             //This attribute was already saved 
             this._oDialogOrders.close();
@@ -104,7 +96,7 @@ sap.ui.define([
         };         
 
         // Se implementan la lógica de otra forma para evitar que marque errores
-        const Main = Controller.extend("logaligroup.Employees.controller.MasterEmployee", {});
+        const Main = Base.extend("logaligroup.Employees.controller.MasterEmployee", {});
 
         Main.prototype.onInit = onInit;
         Main.prototype.onFilter = onFilter;
@@ -115,7 +107,6 @@ sap.ui.define([
         Main.prototype.showOrders = showOrders;
         Main.prototype.onCloseOrder = onCloseOrder;
         Main.prototype.showEmployee = showEmployee;
-        Main.prototype.toOrderDetails = toOrderDetails;
 
         return Main;
     });

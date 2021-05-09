@@ -12,7 +12,7 @@ sap.ui.define([
                 },
                 "height": {
                     type: "sap.ui.core.CSSSize",
-                    defaultValue: "400px"
+                    defaultValue: "100px"
                 },
                 "bgcolor": {
                     type: "sap.ui.core.CSSColor",
@@ -29,7 +29,7 @@ sap.ui.define([
             oRM.addStyle("height", oControl.getProperty("height"));
             oRM.addStyle("background-color", oControl.getProperty("bgcolor"));
             oRM.addStyle("border", "1px solid black");
-            oRM.writeStyle();
+            oRM.writeStyles();
             oRM.write(">");
             oRM.write("<canvas width='" + oControl.getProperty("width")
                          + "' " + "heigth='" + oControl.getProperty("height") + "'");
